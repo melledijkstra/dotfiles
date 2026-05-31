@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Get the directory where this script is located
+# This allows the script to find its 'lib' siblings even when symlinked
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
+
+# "Module" Imports (Sourcing)
+source "$DOTFILES_DIR/lib/core.sh"
+source "$DOTFILES_DIR/lib/apps.sh"
+source "$DOTFILES_DIR/lib/vpn.sh"
+
+CLOSE_APPS=false
+if [[ "$2" == "--close" ]]; then
+    CLOSE_APPS=true
+fi
+
+switch_to_work() {
+    echo "💼 Switching to WORK context..."
+    
+    if [[ "$PLATFORM" == "macos" ]]; then
+        vpn_connect
+        open -a "Microsoft Teams"
+        code
+        open_browser_profile "$WORK_CHROME_PROFILE"
+        
+        if [ "$CLOSE_APPS" = true ]; then
+            echo "   Cleaning up personal environment..."
+        fi
+    fi
+
+    echo "✅ Now in WORK mode."
+}
+
+switch_to_personal() {
+    echo "🏠 Switching to PERSONAL context..."
+    
+    if [[ "$PLATFORM" == "macos" ]]; then
+        vpn_disconnect
+        code
+        open_browser_profile "$PERSONAL_CHROME_PROFILE"
+        
+        if [ "$CLOSE_APPS" = true ]; then
+            quit_app "Microsoft Teams"
+        fi
+    fi
+
+    echo "✅ Now in PERSONAL mode."
+}
+
+case $1 in
+    work)
+        switch_to_work
+        ;;
+    personal)
+        switch_to_personal
+        ;;
+    *)
+        echo "Usage: $0 {work|personal} [--close]"
+        exit 1
+        ;;
+esac
