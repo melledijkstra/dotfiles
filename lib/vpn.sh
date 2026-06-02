@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# VPN Config
 VPN_APP="Cisco Secure Client"
 VPN_PROFILE="EMEA Herzo - adidas"
+
 vpn_connect() {
     echo "   Triggering VPN: $VPN_PROFILE..."
     osascript <<EOF
