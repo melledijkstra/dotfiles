@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Add ~/.local/bin to PATH
+# It contains user-installed executables (third party)
+export PATH="$HOME/.local/bin:$PATH"
+
+# Add `~/bin` to the `$PATH`
+# This contains user created binaries and functions that are not
+# managed by Homebrew, and should take precedence over system binaries.
+export PATH="$HOME/bin:$PATH";
