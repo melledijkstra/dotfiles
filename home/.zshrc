@@ -1,6 +1,14 @@
 # Initialize Homebrew (must come before nvm)
 eval "$(/opt/homebrew/bin/brew shellenv zsh)"
 
+# Load paths needed to find executables
+# * ~/.path can be used to extend `$PATH`.
+# ⚠️ The order is important of adding to the PATH!
+# That is why it is high up in the file, so that it can be used by other plugins and functions.
+if [[ -f "$HOME/.path" ]]; then
+  source "$HOME/.path"
+fi
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -98,9 +106,8 @@ autoload -U compinit && compinit
 source $ZSH/oh-my-zsh.sh
 
 # Load the shell dotfiles, and then some:
-# * ~/.path can be used to extend `$PATH`.
 # * ~/.secrets can be used for secret exports you don’t want to commit.
-for file in ~/.{path,config,exports,zsh_prompt,functions}; do
+for file in ~/.{exports,zsh_prompt,functions,aliases}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;

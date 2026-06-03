@@ -14,7 +14,7 @@ alias ohmyzsh="code ~/.oh-my-zsh"
 # Shortcuts
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
-alias p="cd ~/projects"
+
 alias g="git"
 
 # Reload the shell (i.e. invoke as a login shell)

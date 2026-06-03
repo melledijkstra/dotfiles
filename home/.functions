@@ -1,5 +1,28 @@
 #!/usr/bin/env zsh
 
+# quickly move to project directories + autocomplete
+function p() {
+  if [ -z "$1" ]; then
+    cd ~/projects
+  else
+	  cd ~/projects/"$1"
+  fi
+}
+compdef '_path_files -W ~/projects -/' p
+
+# quickly move to work directories + autocomplete
+function adi() {
+	if [ -z "$1" ]; then
+    cd ~/adidas
+  else
+	  cd ~/adidas/"$1"
+  fi
+}
+compdef '_path_files -W ~/adidas -/' adi
+
+### --------- Existing Functions from Mathias Bynens ------------
+# Some are modified...
+
 # Create a new directory and enter it
 function mkd() {
 	mkdir -p "$@" && cd "$_";
@@ -44,7 +67,7 @@ function dataurl() {
 # Start an HTTP server from a directory, optionally specifying the port
 function server() {
 	local port="${1:-8000}";
-	sleep 1 && open "http://localhost:${port}/" &
+	sleep 2 && open "http://localhost:${port}/" &
 	# Set the default Content-Type to `text/plain` instead of `application/octet-stream`
 	# And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
 	python3 -c $'import http.server, sys\nhandler = http.server.SimpleHTTPRequestHandler\nmap = handler.extensions_map\nmap[""] = "text/plain"\nfor k in list(map.keys()):\n\tmap[k] = map[k] + ";charset=UTF-8"\nhttp.server.test(HandlerClass=handler, port=int(sys.argv[1]))' "$port";

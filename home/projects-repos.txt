@@ -1,0 +1,16 @@
+# projects-repos.txt — Repositories cloned into ~/projects
+# One SSH URL per line. Blank lines and lines starting with # are ignored.
+
+# GitHub (personal)
+# Tooling
+git@github.com:melledijkstra/ducttape.git
+git@github.com:melledijkstra/Svelte-Google-Apps-Script.git
+git@github.com:melledijkstra/toolbox.git
+
+# Products
+git@github.com:melledijkstra/gas-fire.git
+git@github.com:melledijkstra/kiekeboe.git
+git@github.com:melledijkstra/world-citizens.git
+git@github.com:melledijkstra/piano_visualizer.git
+git@github.com:melledijkstra/melledijkstra.github.io.git
+git@github.com:melledijkstra/timeline.git
