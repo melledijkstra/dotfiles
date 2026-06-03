@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
 
-# Install command-line tools using Homebrew.
+# Install essential applications & tools using Homebrew
+
+# Ensure Homebrew is installed
+if ! command -v brew &> /dev/null; then
+    echo "🍺 Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Set up brew path for current session based on architecture
+    if [[ "$(uname -m)" == "arm64" ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    else
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+else
+    echo "✅ Homebrew already installed."
+fi
 
 # Make sure we’re using the latest Homebrew.
 brew update
