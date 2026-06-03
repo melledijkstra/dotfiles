@@ -28,6 +28,12 @@ BREW_PREFIX=$(brew --prefix)
 
 # Install from Brewfile
 echo "Installing Homebrew packages from Brewfile... 🚀"
+
+# > 💡 vital package for this dotfiles setup
+# > `stow` is used for managing symlinks of dotfiles from the repository
+# > to the home directory.
+brew install stow
+
 brew bundle install --file="./Brewfile"
 
 # Add `gsha256sum` as `sha256sum` for compatibility with GNU tools.

@@ -3,6 +3,11 @@
 # Stop on error
 set -e
 
+echo "Pulling latest changes from GitHub... 🌐"
+echo "This makes sure we have the latest updates to the dotfiles before we start installing."
+
+git pull origin main;
+
 # Load utilities
 # Note: This assumes the script is run from within the repo or after cloning
 SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
