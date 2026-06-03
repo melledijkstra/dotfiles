@@ -100,7 +100,12 @@ source $ZSH/oh-my-zsh.sh
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.secrets can be used for secret exports you don’t want to commit.
-for file in ~/.{path,config,exports,zsh_prompt,secrets,functions}; do
+for file in ~/.{path,config,exports,zsh_prompt,functions}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
+
+# load secrets if the file exists
+if [[ -f "$HOME/.secrets" ]]; then
+  source "$HOME/.secrets"
+fi

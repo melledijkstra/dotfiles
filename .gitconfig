@@ -1,5 +1,4 @@
 [alias]
-
 	# View abbreviated SHA, description, and history graph of the latest 20 commits.
 	l = log --pretty=oneline -n 20 --graph --abbrev-commit
 
@@ -12,11 +11,17 @@
 	# `git di $number` shows the diff between the state `$number` revisions ago and the current state.
 	di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
 
-	# Pull in remote changes for the current repository and all its submodules.
-	p = pull --recurse-submodules
+	# Pull in remote changes for the current repository.
+	p = pull
+
+  # Pull in remote changes for the current repository and prune deleted branches.
+  pp = pull -p
 
 	# Clone a repository including all submodules.
 	c = clone --recursive
+
+  # Quick checkout
+  co = checkout
 
 	# Commit all changes.
 	ca = !git add ':(exclude,attr:builtin_objectmode=160000)' && git commit -av
@@ -67,17 +72,14 @@
 	whoami = config user.email
 
 [apply]
-
 	# Detect whitespace errors when applying a patch.
 	whitespace = fix
 
 [branch]
-
 	# Show most recently changed branches first.
 	sort = -committerdate
 
 [core]
-
 	# Use custom `.gitignore` and `.gitattributes`.
 	#excludesfile = ~/.gitignore
 	#attributesfile = ~/.gitattributes
@@ -99,87 +101,85 @@
 	# https://git-scm.com/docs/git-update-index#_untracked_cache
 	untrackedCache = true
 
-### Colour Config ###
+  # Not sure what this does exactly, needs investigation
+  hooksPath = git-hooks
+
+### ---------- Colour Config -------------------------
 
 [color]
-
 	# Use colors in Git commands that are capable of colored output when
 	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
 	ui = auto
 
 [color "branch"]
-
 	current = yellow reverse
 	local = yellow
 	remote = green
 
 [color "diff"]
-
 	meta = yellow bold
 	frag = magenta bold # line info
 	old = red # deletions
 	new = green # additions
 
 [color "status"]
-
 	added = yellow
 	changed = green
 	untracked = cyan
 
 [commit]
-
 	# https://help.github.com/articles/signing-commits-using-gpg/
 	#gpgsign = true
 
 [diff]
-
 	# Detect copies as well as renames.
 	renames = copies
 
 [diff "bin"]
-
 	# Use `hexdump` to diff binary files.
 	textconv = hexdump -v -C
 
 [help]
-
 	# Automatically correct and execute mistyped commands.
-	autocorrect = 1
+	#autocorrect = 1
 
 [merge]
-
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
 
 [push]
-
 	# https://git-scm.com/docs/git-config#git-config-pushdefault
-	default = simple
+	#default = simple
 	# Make `git push` push relevant annotated tags when pushing branches out.
-	followTags = true
+	#followTags = true
 
-### URL shorthands ###
+### ---------- URL shorthands -------------------------
 
 # [url "git@github.com:"]
-
 # 	insteadOf = "gh:"
 # 	pushInsteadOf = "github:"
 # 	pushInsteadOf = "git://github.com/"
 
 # [url "git://github.com/"]
-
 # 	insteadOf = "github:"
 
 # [url "git@gist.github.com:"]
-
 # 	insteadOf = "gst:"
 # 	pushInsteadOf = "gist:"
 # 	pushInsteadOf = "git://gist.github.com/"
 
 # [url "git://gist.github.com/"]
-
 # 	insteadOf = "gist:"
 
 [init]
-
 	defaultBranch = main
+
+# Automatically include additional configuration files based
+# on the repository location.
+[includeIf "gitdir:~/projects/"]
+	path = ~/.git.personal.gitconfig
+
+# adidas specific settings when working in the adidas directory
+# this automatically sets the right identity
+[includeIf "gitdir:~/adidas/"]
+	path = ~/.git.adidas.gitconfig

@@ -13,5 +13,9 @@ Thumbs.db
 .Spotlight-V100
 .Trashes
 
+# Personal info (to avoid spam, etc.)
+.git.adidas.gitconfig
+.git.personal.gitconfig
+
 # Secrets file (never to be committed!)
 .secrets
