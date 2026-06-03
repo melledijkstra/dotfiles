@@ -5,20 +5,23 @@
 # !⚠️! CAUTION !⚠️! This will overwrite the existing Brewfile with the currently installed packages on your system.
 # brew bundle dump --file=./Brewfile
 
-# Shell
+## Shell
 brew "zsh"
 
-# Git + Github
+## Git + Github
 # brew "git"
 # brew "gh"
 brew "git-lfs"
 
-# File Processing
+## File Processing
 brew "ffmpeg"
 brew "gifsicle"
 brew "exiftool"
 
-# Development Tools
+## Development Tools
+# Install GNU core utilities (those that come with macOS are outdated).
+# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
+brew "coreutils"
 brew "go"
 brew "jq"
 brew "mkcert"
@@ -28,15 +31,15 @@ brew "pnpm"
 brew "gemini-cli"
 cask "copilot-cli"
 
-# Other
+## Other
 brew "googleworkspace-cli"
 
-# GUI Applications
+## GUI Applications
 # cask "visual-studio-code"
 cask "stats"
 cask "bruno"
 
-# VS Code Extensions
+## VS Code Extensions
 vscode "ai-engineer-coach.ai-engineer-coach"
 # favourite themes for vscode
 vscode "akamud.vscode-theme-onedark"
@@ -46,11 +49,11 @@ vscode "dbaeumer.vscode-eslint"
 vscode "google.gemini-cli-vscode-ide-companion"
 vscode "vitest.explorer"
 
-# Global NPM Packages
+## Global NPM Packages
 npm "@google/jules"
 # npm "corepack"
 # npm "deno"
 
-# Work Related
+## Work Related
 brew "colima"
 brew "docker"

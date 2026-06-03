@@ -26,17 +26,15 @@ brew upgrade
 # Save Homebrew’s installed location.
 BREW_PREFIX=$(brew --prefix)
 
-# TODO: Move the below tools to the Brewfile and use `brew bundle` instead
-
-# Install GNU core utilities (those that come with macOS are outdated).
-# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-brew install coreutils
-
-# ln -s "${BREW_PREFIX}/bin/gsha256sum" "${BREW_PREFIX}/bin/sha256sum"
-
 # Install from Brewfile
 echo "Installing Homebrew packages from Brewfile... 🚀"
 brew bundle install --file="./Brewfile"
+
+# Add `gsha256sum` as `sha256sum` for compatibility with GNU tools.
+# Part of `coreutils` installation (might be needed for gpg signing).
+# ln -s "${BREW_PREFIX}/bin/gsha256sum" "${BREW_PREFIX}/bin/sha256sum"
+
+# TODO: Move the below tools to the Brewfile and use `brew bundle` instead
 
 # Install some other useful utilities like `sponge`.
 # brew install moreutils
@@ -46,10 +44,6 @@ brew bundle install --file="./Brewfile"
 
 # Install GNU `sed`, overwriting the built-in `sed`.
 # brew install gnu-sed --with-default-names
-
-# Install a modern version of Bash.
-# brew install bash
-# brew install bash-completion2
 
 # Install `wget` with IRI support.
 # brew install wget --with-iri
