@@ -14,4 +14,4 @@
 # @raycast.author melle_dijkstra
 # @raycast.authorURL https://raycast.com/melle_dijkstra
 
-open -a "Google Chrome" --args --profile-directory="Profile 1"
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --profile-directory="Profile 1"
