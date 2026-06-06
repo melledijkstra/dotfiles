@@ -20,7 +20,7 @@ function adi() {
 }
 compdef '_path_files -W ~/adidas -/' adi
 
-### --------- Existing Functions from Mathias Bynens ------------
+### --------- Existing Functions (from Mathias Bynens) ------------
 # Some are modified...
 
 # Create a new directory and enter it

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # VPN Config
+VPN_COMMAND="/opt/cisco/secureclient/bin/vpn"
 VPN_APP="Cisco Secure Client"
 VPN_PROFILE="EMEA Herzo - adidas"
 
@@ -69,21 +70,20 @@ EOF
 
 vpn_disconnect() {
     echo "   Disconnecting VPN..."
-    osascript <<EOF
-tell application "System Events"
-    if exists (process "$VPN_APP") then
-        tell process "$VPN_APP"
-            if (exists window "Cisco Secure Client") then
-                set vpnWindow to window "Cisco Secure Client"
-                if (exists button "Disconnect" of vpnWindow) then
-                    click button "Disconnect" of vpnWindow
-                    delay 1
-                end if
-            end if
-        end tell
-    end if
-end tell
-EOF
-
-    quit_app "$VPN_APP"
+    $VPN_COMMAND disconnect
+#     osascript <<EOF
+# tell application "System Events"
+#     if exists (process "$VPN_APP") then
+#         tell process "$VPN_APP"
+#             if (exists window "Cisco Secure Client") then
+#                 set vpnWindow to window "Cisco Secure Client"
+#                 if (exists button "Disconnect" of vpnWindow) then
+#                     click button "Disconnect" of vpnWindow
+#                     delay 1
+#                 end if
+#             end if
+#         end tell
+#     end if
+# end tell
+# EOF
 }

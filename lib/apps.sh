@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$DOTFILES/lib/core.sh"
+
 quit_app() {
     local app_name=$1
     if [[ "$PLATFORM" == "macos" ]]; then

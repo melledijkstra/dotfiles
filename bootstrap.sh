@@ -6,7 +6,6 @@ cd "$(dirname "${0:A}")" || exit 1;
 
 function make_myself_at_home() {
   local target="$HOME";
-  mkdir -p "$HOME/bin";
 
   # Run a simulation first and capture errors
   # see: https://www.gnu.org/software/stow/manual/stow.html
@@ -20,7 +19,6 @@ function make_myself_at_home() {
 
   echo "✅ No conflicts. Setting up symlinks with Stow..."
   stow --verbose -R -t "$target" home
-  stow --verbose -R -t "$target" bin
 
   # give some time to setup symlinks
   sleep 1;

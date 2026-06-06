@@ -1,0 +1,4 @@
+
+echo "pwd: $(pwd)"
+echo "HOME: $HOME"
+echo "DOTFILES: $DOTFILES"

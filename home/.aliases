@@ -11,6 +11,8 @@
 alias zshconfig="code ~/.zshrc"
 alias ohmyzsh="code ~/.oh-my-zsh"
 
+# --------- EXISTING ALIASES (from Mathias Bynens) ---------
+
 # Shortcuts
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
@@ -126,3 +128,7 @@ alias map="xargs -n1"
 
 # Lock the screen (when going AFK)
 #alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+
+
+# ------------------------------------------------------------------------
+

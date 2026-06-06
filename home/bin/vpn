@@ -1,0 +1,15 @@
+source "$DOTFILES/lib/vpn.sh"
+source "$DOTFILES/lib/apps.sh"
+
+if [[ "$1" == "on" ]]; then
+  echo "Turning VPN on..."
+  # Add your VPN connection command here, e.g.:
+  vpn_connect
+elif [[ "$1" == "off" ]]; then
+  echo "Turning VPN off..."
+  # Add your VPN disconnection command here, e.g.:
+  vpn_disconnect
+  quit_app "$VPN_APP"
+else
+  echo "Usage: $(basename ${0}) [on|off]"
+fi

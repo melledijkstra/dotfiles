@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
 # ----- PERSONAL CONFIGURATION ------------------
-WORK_DIR="$HOME/adidas"
-PERSONAL_DIR="$HOME/projects"
+export WORK_DIR="$HOME/adidas"
+export PROJECTS_DIR="$HOME/projects"
 
-WORK_CHROME_PROFILE="Profile 1"
-PERSONAL_CHROME_PROFILE="Profile 2"
+# important, other files rely on this env var to find the dotfiles directory
+# and import shell files from there
+export DOTFILES="$PROJECTS_DIR/dotfiles"
 
-GIT_AUTHOR_NAME="Melle Dijkstra"
-GIT_AUTHOR_EMAIL="melle.dykstra@gmail.com"
+export WORK_CHROME_PROFILE="Profile 1"
+export PERSONAL_CHROME_PROFILE="Profile 2"
+
+export GIT_AUTHOR_NAME="Melle Dijkstra"
+export GIT_AUTHOR_EMAIL="melle.dykstra@gmail.com"
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
