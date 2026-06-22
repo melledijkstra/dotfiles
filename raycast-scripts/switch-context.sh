@@ -17,4 +17,4 @@ if [[ "$2" == "y" || "$2" == "yes" ]]; then
 fi
 
 # Use the full path to ensure it works in Raycast environment
-$HOME/.local/bin/switch-ctx "$CONTEXT" "$CLOSE_ARG"
+$HOME/bin/switch-ctx "$CONTEXT" "$CLOSE_ARG"
