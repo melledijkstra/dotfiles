@@ -15,7 +15,12 @@
 	p = pull
 
   # Pull in remote changes for the current repository and prune deleted branches.
-  pp = pull -p
+  pp = pull --prune
+
+  pf = push --force
+
+  # Push the current branch to the remote repository and set the upstream.
+  poh = push -u origin HEAD
 
 	# Clone a repository including all submodules.
 	c = clone --recursive
@@ -45,6 +50,9 @@
 
 	# Interactive rebase with the given number of latest commits.
 	reb = "!r() { git rebase -i HEAD~$1; }; r"
+	rebcon = rebase --continue
+	rebort = rebase --abort
+	rebskip = rebase --skip
 
 	# Remove the old tag with this name and tag the latest commit with it.
 	retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
