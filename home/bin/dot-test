@@ -1,3 +1,4 @@
+#!/bin/zsh
 
 echo "pwd: $(pwd)"
 echo "HOME: $HOME"

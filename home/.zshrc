@@ -107,12 +107,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Load the shell dotfiles, and then some:
 # * ~/.secrets can be used for secret exports you don’t want to commit.
-for file in ~/.{exports,zsh_prompt,functions,aliases}; do
+for file in ~/.{zsh_prompt,secrets,functions,aliases}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
-
-# load secrets if the file exists
-if [[ -f "$HOME/.secrets" ]]; then
-  source "$HOME/.secrets"
-fi

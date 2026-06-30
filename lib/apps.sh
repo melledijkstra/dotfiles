@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/zsh
 
-source "$DOTFILES/lib/core.sh"
+source "$DOTFILES/lib/os.sh"
 
 quit_app() {
     local app_name=$1

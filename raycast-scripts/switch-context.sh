@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # @raycast.schemaVersion 1
 # @raycast.title Switch Context
@@ -16,5 +16,4 @@ if [[ "$2" == "y" || "$2" == "yes" ]]; then
     CLOSE_ARG="--close"
 fi
 
-# Use the full path to ensure it works in Raycast environment
 $HOME/bin/switch-ctx "$CONTEXT" "$CLOSE_ARG"

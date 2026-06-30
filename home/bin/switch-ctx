@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/zsh
 
 # "Module" Imports (Sourcing)
-source "$DOTFILES/lib/core.sh"
+source "$DOTFILES/lib/os.sh"
 source "$DOTFILES/lib/apps.sh"
 source "$DOTFILES/lib/vpn.sh"
 

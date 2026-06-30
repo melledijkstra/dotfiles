@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # VPN Config
 VPN_COMMAND="/opt/cisco/secureclient/bin/vpn"

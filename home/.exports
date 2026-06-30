@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # ----- PERSONAL CONFIGURATION ------------------
 export WORK_DIR="$HOME/adidas"

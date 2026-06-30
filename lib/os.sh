@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # Detect the Operating System
 function get_os() {
@@ -10,6 +10,8 @@ function get_os() {
         *)        echo "unknown" ;;
     esac
 }
+
+export PLATFORM=$(get_os)
 
 # Helper to check if it's macOS
 function is_macos() {
