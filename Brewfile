@@ -3,7 +3,7 @@
 
 # To create Brewfile run this command
 # !⚠️! CAUTION !⚠️! This will overwrite the existing Brewfile with the currently installed packages on your system.
-# brew bundle dump --file=./Brewfile
+# brew bundle dump --file=./Brewfile.new
 
 ## Shell
 brew "zsh"
@@ -25,10 +25,16 @@ brew "coreutils"
 brew "go"
 brew "jq"
 brew "mkcert"
-brew "pnpm"
+brew "python@3.14"
+brew "stow"
+brew "tree"
+
+# install using standalone script instead, see: https://pnpm.io/installation
+# brew "pnpm"
+
 
 # AI Tools
-brew "gemini-cli"
+# brew "gemini-cli" # outdated, use Antigravity instead
 cask "copilot-cli"
 
 ## Other
@@ -55,5 +61,5 @@ npm "@google/jules"
 # npm "deno"
 
 ## Work Related
-brew "colima"
+brew "colima", restart_service: :changed
 brew "docker"

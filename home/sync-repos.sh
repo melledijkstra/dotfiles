@@ -43,6 +43,7 @@ sync_repos() {
   fi
 
   mkdir -p "${base_dir}"
+  cd "${base_dir}" || { echo "  [FAIL]  Cannot cd into ${base_dir}"; return 1; }
   echo "==> ${base_dir}"
 
   while IFS= read -r line || [[ -n "${line}" ]]; do
