@@ -14,19 +14,19 @@
 	# Pull in remote changes for the current repository.
 	p = pull
 
-  # Pull in remote changes for the current repository and prune deleted branches.
-  pp = pull --prune
+	# Pull in remote changes for the current repository and prune deleted branches.
+	pp = pull --prune
 
-  pf = push --force
+	pf = push --force
 
-  # Push the current branch to the remote repository and set the upstream.
-  poh = push -u origin HEAD
+	# Push the current branch to the remote repository and set the upstream.
+	poh = push -u origin HEAD
 
 	# Clone a repository including all submodules.
 	c = clone --recursive
 
-  # Quick checkout
-  co = checkout
+	# Quick checkout
+	co = checkout
 
 	# Commit all changes.
 	ca = !git add ':(exclude,attr:builtin_objectmode=160000)' && git commit -av
