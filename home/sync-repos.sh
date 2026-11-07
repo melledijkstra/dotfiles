@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sync-repos.sh — Clone or update repositories listed in adidas-repos.txt and projects-repos.txt
+# sync-repos.sh — Clone or update repositories listed in work-repos.txt and projects-repos.txt
 #
 # Each file contains one SSH clone URL per line.
 # Lines starting with # and blank lines are ignored.
@@ -9,10 +9,10 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ADIDAS_DIR="${HOME}/adidas"
-PROJECTS_DIR="${HOME}/projects"
+WORK_DIR="${WORK_DIR:-${HOME}/work}"
+PROJECTS_DIR="${PROJECTS_DIR:-${HOME}/projects}"
 
-ADIDAS_REPOS_FILE="${SCRIPT_DIR}/adidas-repos.txt"
+WORK_REPOS_FILE="${SCRIPT_DIR}/work-repos.txt"
 PROJECTS_REPOS_FILE="${SCRIPT_DIR}/projects-repos.txt"
 
 clone_or_pull() {
@@ -55,7 +55,7 @@ sync_repos() {
   echo ""
 }
 
-sync_repos "${ADIDAS_DIR}"   "${ADIDAS_REPOS_FILE}"
+sync_repos "${WORK_DIR}"     "${WORK_REPOS_FILE}"
 sync_repos "${PROJECTS_DIR}" "${PROJECTS_REPOS_FILE}"
 
 echo "Done."

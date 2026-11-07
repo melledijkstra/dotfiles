@@ -11,14 +11,15 @@ function p() {
 compdef '_path_files -W ~/projects -/' p
 
 # quickly move to work directories + autocomplete
-function adi() {
-	if [ -z "$1" ]; then
-    cd ~/adidas
+function work() {
+  local target_dir="${WORK_DIR:-$HOME/work}"
+  if [ -z "$1" ]; then
+    cd "$target_dir"
   else
-	  cd ~/adidas/"$1"
+    cd "$target_dir/$1"
   fi
 }
-compdef '_path_files -W ~/adidas -/' adi
+compdef '_path_files -W "${WORK_DIR:-$HOME/work}" -/' work
 
 ### --------- Existing Functions (from Mathias Bynens) ------------
 # Some are modified...

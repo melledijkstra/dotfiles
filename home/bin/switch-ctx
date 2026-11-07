@@ -3,7 +3,6 @@
 # "Module" Imports (Sourcing)
 source "$DOTFILES/lib/os.sh"
 source "$DOTFILES/lib/apps.sh"
-source "$DOTFILES/lib/vpn.sh"
 
 CLOSE_APPS=false
 if [[ "$2" == "--close" ]]; then
@@ -14,7 +13,6 @@ switch_to_work() {
     echo "💼 Switching to WORK context..."
 
     if [[ "$PLATFORM" == "macos" ]]; then
-        vpn_connect
         open -a "Microsoft Teams"
         code
         open_browser_profile "$WORK_CHROME_PROFILE"
@@ -31,7 +29,6 @@ switch_to_personal() {
     echo "🏠 Switching to PERSONAL context..."
 
     if [[ "$PLATFORM" == "macos" ]]; then
-        vpn_disconnect
         code
         open_browser_profile "$PERSONAL_CHROME_PROFILE"
 

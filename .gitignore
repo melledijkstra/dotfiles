@@ -14,8 +14,9 @@ Thumbs.db
 .Trashes
 
 # Personal info (to avoid spam, etc.)
-.git.adidas.gitconfig
+.git.work.gitconfig
 .git.personal.gitconfig
+work-repos.txt
 
 # Secrets file (never to be committed!)
 .secrets
