@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # "Module" Imports (Sourcing)
 source "$DOTFILES/lib/os.sh"
