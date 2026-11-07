@@ -1,5 +1,9 @@
-# Initialize Homebrew (must come before nvm)
-eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+# Initialize Homebrew on macOS (must come before nvm)
+if [[ -x "/opt/homebrew/bin/brew" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+elif [[ -x "/usr/local/bin/brew" ]]; then
+  eval "$(/usr/local/bin/brew shellenv zsh)"
+fi
 
 # Load paths needed to find executables
 # * ~/.path can be used to extend `$PATH`.
@@ -103,7 +107,9 @@ autoload -U compinit && compinit
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
-source $ZSH/oh-my-zsh.sh
+if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
+  source "$ZSH/oh-my-zsh.sh"
+fi
 
 # Load the shell dotfiles, and then some:
 # * ~/.secrets can be used for secret exports you don’t want to commit.
