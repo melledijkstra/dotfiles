@@ -20,6 +20,13 @@ switch_to_work() {
         if [ "$CLOSE_APPS" = true ]; then
             echo "   Cleaning up personal environment..."
         fi
+    elif [[ "$PLATFORM" == "linux" ]]; then
+        command -v code &>/dev/null && code
+        open_browser_profile "$WORK_CHROME_PROFILE"
+
+        if [ "$CLOSE_APPS" = true ]; then
+            echo "   Cleaning up personal environment..."
+        fi
     fi
 
     echo "✅ Now in WORK mode."
@@ -34,6 +41,13 @@ switch_to_personal() {
 
         if [ "$CLOSE_APPS" = true ]; then
             quit_app "Microsoft Teams"
+        fi
+    elif [[ "$PLATFORM" == "linux" ]]; then
+        command -v code &>/dev/null && code
+        open_browser_profile "$PERSONAL_CHROME_PROFILE"
+
+        if [ "$CLOSE_APPS" = true ]; then
+            quit_app "teams"
         fi
     fi
 

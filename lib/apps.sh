@@ -7,6 +7,9 @@ quit_app() {
     if [[ "$PLATFORM" == "macos" ]]; then
         echo "   Stopping $app_name..."
         osascript -e "quit app \"$app_name\"" 2>/dev/null || pkill -f "$app_name"
+    elif [[ "$PLATFORM" == "linux" ]]; then
+        echo "   Stopping $app_name..."
+        pkill -f "$app_name" 2>/dev/null || true
     fi
 }
 
@@ -34,6 +37,22 @@ open_browser_profile() {
                 open -na "Google Chrome" --args --profile-directory="$profile" "$url"
             else
                 open -na "Google Chrome" --args --profile-directory="$profile"
+            fi
+        fi
+    elif [[ "$PLATFORM" == "linux" ]]; then
+        local profile_dir="$HOME/.config/google-chrome/$profile"
+
+        if [ -e "$profile_dir/SingletonLock" ]; then
+            echo "   Chrome profile '$profile' is already open."
+            if [ -n "$url" ]; then
+                nohup google-chrome --profile-directory="$profile" "$url" >/dev/null 2>&1 &
+            fi
+        else
+            echo "   Opening Chrome profile: $profile..."
+            if [ -n "$url" ]; then
+                nohup google-chrome --profile-directory="$profile" "$url" >/dev/null 2>&1 &
+            else
+                nohup google-chrome --profile-directory="$profile" >/dev/null 2>&1 &
             fi
         fi
     fi
