@@ -46,6 +46,10 @@ elif is_linux; then
     if ask_yes_no "📦 Install/Upgrade Ubuntu packages and Oh My Zsh (apt.sh)?"; then
         bash ./apt.sh
     fi
+
+    if ask_yes_no "🖥️  Install Linux applications (Chrome, VS Code, agy CLI) (apps-linux.sh)?"; then
+        bash ./apps-linux.sh
+    fi
 fi
 
 if ask_yes_no "🔗 Sync dotfiles to home directory (bootstrap.sh)?"; then
