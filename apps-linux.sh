@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Install Linux GUI applications and CLI tools (Google Chrome, VS Code, agy CLI)
+# Install Linux GUI applications and CLI tools
 
 set -e
 
@@ -46,6 +46,58 @@ if command -v agy &>/dev/null; then
 else
   echo "🤖 Installing Antigravity CLI (agy)..."
   curl -fsSL https://antigravity.google/cli/install.sh | bash
+fi
+
+# 4. Node.js (via nvm)
+export NVM_DIR="$HOME/.config/nvm"
+if [ ! -d "$NVM_DIR" ]; then
+  echo "📦 Installing nvm..."
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash
+else
+  echo "✅ nvm is already installed."
+fi
+
+# Ensure corepack is automatically installed for any future Node.js versions
+mkdir -p "$NVM_DIR"
+if [ ! -f "$NVM_DIR/default-packages" ] || ! grep -qx "corepack" "$NVM_DIR/default-packages"; then
+  echo "corepack" >> "$NVM_DIR/default-packages"
+fi
+
+# Load nvm in current session (temporarily disable set -e as nvm internals can return non-zero)
+set +e
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  \. "$NVM_DIR/nvm.sh"
+fi
+
+if ! command -v nvm &>/dev/null; then
+  echo "❌ Error: nvm could not be loaded."
+  set -e
+  exit 1
+fi
+
+# Download and install latest stable Node.js (LTS)
+if ! nvm ls 'lts/*' &>/dev/null; then
+  echo "🟢 Installing latest stable Node.js (LTS)..."
+  nvm install --lts
+else
+  echo "✅ Node.js LTS is already installed."
+fi
+
+nvm use --lts
+nvm alias default 'lts/*'
+
+echo "Node.js version: $(node -v)"
+echo "npm version: $(npm -v)"
+set -e
+
+# 5. pnpm (via Corepack)
+if ! command -v corepack &>/dev/null; then
+  npm install -g corepack
+fi
+corepack enable pnpm
+
+if command -v pnpm &>/dev/null; then
+  echo "✅ pnpm is installed and enabled ($(pnpm -v))."
 fi
 
 echo "✨ Applications setup completed!"

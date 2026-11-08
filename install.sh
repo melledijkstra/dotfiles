@@ -47,7 +47,7 @@ elif is_linux; then
         bash ./apt.sh
     fi
 
-    if ask_yes_no "🖥️  Install Linux applications (Chrome, VS Code, agy CLI) (apps-linux.sh)?"; then
+    if ask_yes_no "🖥️  Install Linux applications (GUIs, stand-alone) (apps-linux.sh)?"; then
         bash ./apps-linux.sh
     fi
 fi
