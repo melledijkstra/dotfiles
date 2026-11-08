@@ -31,11 +31,10 @@ PACKAGES=(
   libnss3-tools
   mkcert
   python3
-  python3-pip
   tree
 
   # Containers
-  docker.io
+  # docker.io # for now disabled
 )
 
 sudo apt install -y "${PACKAGES[@]}"
