@@ -62,6 +62,8 @@ sudo apt autoremove -y
 echo "Finished apt setup! 🎉"
 
 echo "Switching default shell to zsh... 🐚"
-if [[ "$SHELL" != "$(command -v zsh)" ]]; then
-  chsh -s "$(command -v zsh)"
+CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
+ZSH_PATH="$(command -v zsh)"
+if [[ -n "$ZSH_PATH" && "$CURRENT_SHELL" != "$ZSH_PATH" ]]; then
+  chsh -s "$ZSH_PATH"
 fi
