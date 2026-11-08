@@ -17,3 +17,13 @@ export PLATFORM=$(get_os)
 function is_macos() {
     [[ "$(get_os)" == "macos" ]]
 }
+
+# Helper to check if it's Linux
+function is_linux() {
+    [[ "$(get_os)" == "linux" ]]
+}
+
+# Helper to check if it's Ubuntu (or Ubuntu-based)
+function is_ubuntu() {
+    is_linux && [[ -f /etc/os-release ]] && grep -qiE '^ID(_LIKE)?=.*ubuntu' /etc/os-release
+}

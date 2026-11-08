@@ -11,14 +11,15 @@ function p() {
 compdef '_path_files -W ~/projects -/' p
 
 # quickly move to work directories + autocomplete
-function adi() {
-	if [ -z "$1" ]; then
-    cd ~/adidas
+function work() {
+  local target_dir="${WORK_DIR:-$HOME/work}"
+  if [ -z "$1" ]; then
+    cd "$target_dir"
   else
-	  cd ~/adidas/"$1"
+    cd "$target_dir/$1"
   fi
 }
-compdef '_path_files -W ~/adidas -/' adi
+compdef '_path_files -W "${WORK_DIR:-$HOME/work}" -/' work
 
 ### --------- Existing Functions (from Mathias Bynens) ------------
 # Some are modified...
@@ -28,10 +29,23 @@ function mkd() {
 	mkdir -p "$@" && cd "$_";
 }
 
-# Change working directory to the top-most Finder window location
-function cdf() { # short for `cdfinder`
-	cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')";
-}
+# Normalize `open` across Linux, macOS, and Windows.
+# This is needed to make `server` and `o` functions cross-platform.
+if [ ! "$(uname -s)" = 'Darwin' ]; then
+	if grep -q Microsoft /proc/version 2>/dev/null; then
+		# Ubuntu on Windows using the Linux subsystem
+		alias open='explorer.exe';
+	else
+		alias open='xdg-open';
+	fi
+fi
+
+# Change working directory to the top-most Finder window location (macOS only)
+if [ "$(uname -s)" = 'Darwin' ]; then
+	function cdf() { # short for `cdfinder`
+		cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')";
+	}
+fi
 
 # Determine size of a file or total size of a directory
 function fs() {
@@ -120,17 +134,6 @@ function getcertnames() {
 		return 1;
 	fi;
 }
-
-# Normalize `open` across Linux, macOS, and Windows.
-# This is needed to make the `o` function (see below) cross-platform.
-if [ ! $(uname -s) = 'Darwin' ]; then
-	if grep -q Microsoft /proc/version; then
-		# Ubuntu on Windows using the Linux subsystem
-		alias open='explorer.exe';
-	else
-		alias open='xdg-open';
-	fi
-fi
 
 # `o` with no arguments opens the current directory, otherwise opens the given
 # location

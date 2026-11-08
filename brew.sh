@@ -121,10 +121,13 @@ brew cleanup
 echo "Finished Homebrew setup! 🎉"
 
 echo "Switching default shell to zsh... 🐚"
-# Switch to using brew-installed zsh as default shell if it's not already the current shell.
-if [ "$SHELL" != "$(which zsh)" ]; then
+# Switch to using brew-installed zsh as default shell if it's not already the user's login shell.
+CURRENT_SHELL="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')"
+CURRENT_SHELL="${CURRENT_SHELL:-$SHELL}"
+ZSH_PATH="$(command -v zsh)"
+if [[ -n "$ZSH_PATH" && "$CURRENT_SHELL" != "$ZSH_PATH" ]]; then
   # For m1 macs:
-  chsh -s "$(which zsh)"
+  chsh -s "$ZSH_PATH"
   # For intel macs:
   # chsh -s /usr/local/bin/zsh
   # macOS High Sierra and older:

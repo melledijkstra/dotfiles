@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # @raycast.schemaVersion 1
 # @raycast.title Switch Context

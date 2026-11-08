@@ -17,8 +17,8 @@ cd "$SOURCE_DIR"
 source "$SOURCE_DIR/lib/os.sh"
 
 # OS Validation
-if ! is_macos; then
-    echo "❌ Error: This dotfiles setup is currently only optimized for macOS."
+if ! is_macos && ! is_linux; then
+    echo "❌ Error: This dotfiles setup only supports macOS and Linux (Ubuntu)."
     echo "Detected OS: $(get_os)"
     echo "Aborting installation."
     exit 1
@@ -35,19 +35,31 @@ function ask_yes_no() {
     fi
 }
 
-echo "🚀 Starting Dotfiles Installation..."
+echo "🚀 Starting Dotfiles Installation for $(get_os)..."
 
 # Interactive Steps
-if ask_yes_no "📦 Install/Upgrade Homebrew packages (brew.sh)?"; then
-    ./brew.sh
+if is_macos; then
+    if ask_yes_no "📦 Install/Upgrade Homebrew packages (brew.sh)?"; then
+        ./brew.sh
+    fi
+elif is_linux; then
+    if ask_yes_no "📦 Install/Upgrade Ubuntu packages and Oh My Zsh (apt.sh)?"; then
+        bash ./apt.sh
+    fi
+
+    if ask_yes_no "🖥️  Install Linux applications (Chrome, VS Code, agy CLI) (apps-linux.sh)?"; then
+        bash ./apps-linux.sh
+    fi
 fi
 
 if ask_yes_no "🔗 Sync dotfiles to home directory (bootstrap.sh)?"; then
     ./bootstrap.sh --force
 fi
 
-if ask_yes_no "💻 Apply macOS system defaults (.macos)?"; then
-    ./.macos
+if is_macos; then
+    if ask_yes_no "💻 Apply macOS system defaults (macos.sh)?"; then
+        ./macos.sh
+    fi
 fi
 
 echo "✨ Installation steps completed!"

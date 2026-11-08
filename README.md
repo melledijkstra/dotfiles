@@ -8,28 +8,33 @@
 
 ## Requirements
 
-- Brew (https://brew.sh/)
+- **macOS:** [Homebrew](https://brew.sh/)
+- **Linux (Ubuntu):** `apt` (built-in)
 
 ## Installation
 
-### [WIP] Automatic Install Without Git Clone
+### Using Git and the install script
 
-To install these dotfiles without Git:
+You can clone the repository wherever you want (recommended: `~/projects/dotfiles`). The interactive `install.sh` script will detect your OS (macOS or Linux), install packages, and symlink dotfiles into your home directory using GNU Stow.
 
 ```bash
-# TODO: Update this script execution to be correct when repository is actually installable from a single command
-# cd; curl -#L https://github.com/melledijkstra/dotfiles/tarball/main | tar -xzv --strip-components 1 --exclude={README.md,bootstrap.sh,.osx,LICENSE-MIT.txt}
+git clone https://github.com/melledijkstra/dotfiles.git ~/projects/dotfiles
+cd ~/projects/dotfiles
+./install.sh
 ```
 
-### Using Git and the bootstrap script
-
-You can clone the repository wherever you want. (I like to keep it in `~/projects/dotfiles`). The bootstrapper script will pull in the latest version and assist with installing the files in the correct place.
+Alternatively, you can run individual steps manually:
 
 ```bash
-git clone https://github.com/melledijkstra/dotfiles.git
-cd dotfiles
-brew bundle install
-source bootstrap.sh
+# On Ubuntu / Debian:
+./apt.sh
+./apps-linux.sh # optional: installs Google Chrome, VS Code, and agy CLI
+
+# On macOS:
+./brew.sh
+
+# Symlink dotfiles to $HOME:
+./bootstrap.sh
 ```
 
 ## Updating the dotfiles

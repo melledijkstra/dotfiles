@@ -1,9 +1,8 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # "Module" Imports (Sourcing)
 source "$DOTFILES/lib/os.sh"
 source "$DOTFILES/lib/apps.sh"
-source "$DOTFILES/lib/vpn.sh"
 
 CLOSE_APPS=false
 if [[ "$2" == "--close" ]]; then
@@ -14,9 +13,15 @@ switch_to_work() {
     echo "💼 Switching to WORK context..."
 
     if [[ "$PLATFORM" == "macos" ]]; then
-        vpn_connect
         open -a "Microsoft Teams"
         code
+        open_browser_profile "$WORK_CHROME_PROFILE"
+
+        if [ "$CLOSE_APPS" = true ]; then
+            echo "   Cleaning up personal environment..."
+        fi
+    elif [[ "$PLATFORM" == "linux" ]]; then
+        command -v code &>/dev/null && code
         open_browser_profile "$WORK_CHROME_PROFILE"
 
         if [ "$CLOSE_APPS" = true ]; then
@@ -31,12 +36,18 @@ switch_to_personal() {
     echo "🏠 Switching to PERSONAL context..."
 
     if [[ "$PLATFORM" == "macos" ]]; then
-        vpn_disconnect
         code
         open_browser_profile "$PERSONAL_CHROME_PROFILE"
 
         if [ "$CLOSE_APPS" = true ]; then
             quit_app "Microsoft Teams"
+        fi
+    elif [[ "$PLATFORM" == "linux" ]]; then
+        command -v code &>/dev/null && code
+        open_browser_profile "$PERSONAL_CHROME_PROFILE"
+
+        if [ "$CLOSE_APPS" = true ]; then
+            quit_app "teams"
         fi
     fi
 

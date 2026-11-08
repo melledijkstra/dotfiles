@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 # ----- PERSONAL CONFIGURATION ------------------
-export WORK_DIR="$HOME/adidas"
+export WORK_DIR="${WORK_DIR:-$HOME/work}"
 export PROJECTS_DIR="$HOME/projects"
 
 # important, other files rely on this env var to find the dotfiles directory
@@ -13,11 +13,11 @@ export PERSONAL_CHROME_PROFILE="Profile 2"
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
-  # Make Visual Studio Code the default editor.
-  export EDITOR='code'
-else
   # Use nano for remote sessions, as it is more likely to be available and user-friendly for quick edits.
   export EDITOR='nano'
+else
+  # Make Visual Studio Code the default editor.
+  export EDITOR='code'
 fi
 
 # ----- OTHER CONFIGURATION --------------------
