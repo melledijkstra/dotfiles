@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sync-repos.sh — Clone or update repositories listed in work-repos.txt and projects-repos.txt
+# sync-repos — Clone or update repositories listed in config/repos/*.txt
 #
 # Each file contains one SSH clone URL per line.
 # Lines starting with # and blank lines are ignored.
@@ -7,13 +7,13 @@
 
 set -uo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-WORK_DIR="${WORK_DIR:-${HOME}/work}"
 PROJECTS_DIR="${PROJECTS_DIR:-${HOME}/projects}"
+WORK_DIR="${WORK_DIR:-${HOME}/work}"
+DOTFILES="${DOTFILES:-${PROJECTS_DIR}/dotfiles}"
 
-WORK_REPOS_FILE="${SCRIPT_DIR}/work-repos.txt"
-PROJECTS_REPOS_FILE="${SCRIPT_DIR}/projects-repos.txt"
+CONFIG_DIR="${DOTFILES}/config/repos"
+WORK_REPOS_FILE="${CONFIG_DIR}/work.txt"
+PROJECTS_REPOS_FILE="${CONFIG_DIR}/projects.txt"
 
 clone_or_pull() {
   local base_dir="$1"

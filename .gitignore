@@ -16,7 +16,7 @@ Thumbs.db
 # Personal info (to avoid spam, etc.)
 .git.work.gitconfig
 .git.personal.gitconfig
-work-repos.txt
+config/repos/work.txt
 
 # Secrets file (never to be committed!)
 .secrets
