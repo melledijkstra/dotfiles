@@ -8,14 +8,24 @@
 
 ## Requirements
 
-- **macOS:** [Homebrew](https://brew.sh/)
-- **Linux (Ubuntu):** `apt` (built-in)
+- **macOS:** macOS (Xcode Command Line Tools & [Homebrew](https://brew.sh/) will be installed automatically if missing)
+- **Linux (Ubuntu/Debian):** `apt` (built-in)
 
 ## Installation
 
+### Quick Install (One-Liner on a Fresh Machine)
+
+On a fresh macOS or Ubuntu/Debian installation, run:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/melledijkstra/dotfiles/main/install.sh)"
+```
+
+This will ensure `git` (and Xcode Command Line Tools on macOS) is installed, clone the repository to `~/projects/dotfiles`, and launch the interactive installer.
+
 ### Using Git and the install script
 
-You can clone the repository wherever you want (recommended: `~/projects/dotfiles`). The interactive `install.sh` script will detect your OS (macOS or Linux), install packages, and symlink dotfiles into your home directory using GNU Stow.
+Alternatively, you can clone the repository manually (recommended: `~/projects/dotfiles`). The interactive `install.sh` script asks upfront which steps you want to run, ensures core prerequisites (`git`, `curl`, `zsh`, `stow`, `Oh My Zsh`) are installed, and executes your selected steps.
 
 ```bash
 git clone https://github.com/melledijkstra/dotfiles.git ~/projects/dotfiles
@@ -23,9 +33,12 @@ cd ~/projects/dotfiles
 ./install.sh
 ```
 
-Alternatively, you can run individual steps manually:
+You can also run individual steps manually:
 
 ```bash
+# Core prerequisites (git, curl, zsh, stow, Oh My Zsh, zsh-autosuggestions):
+./core.sh
+
 # On Ubuntu / Debian:
 ./apt.sh
 # optional: installs GUI apps, e.g. Google Chrome, VS Code, Spotify and various dev tools
@@ -34,15 +47,13 @@ Alternatively, you can run individual steps manually:
 # On macOS:
 ./brew.sh
 
-# Symlink dotfiles to $HOME:
+# Symlink dotfiles to $HOME (automatically backs up existing conflicts to ~/.dotfiles-backup):
 ./bootstrap.sh
 ```
 
 ## Updating the dotfiles
 
-// TODO: actually make all scripts to be executable multiple times without messing things up
-
-To update at any time, just run the same installation script and it will update anything needed to be updated.
+All scripts are idempotent and safe to run multiple times. To update at any time, just run `./install.sh` and it will pull the latest changes and update the components you select.
 
 ### Update only the dotfiles
 
