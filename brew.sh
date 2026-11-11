@@ -2,19 +2,20 @@
 
 # Install essential applications & tools using Homebrew
 
-# Ensure Homebrew is installed
-if ! command -v brew &> /dev/null; then
-    echo "🍺 Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+set -e
 
-    # Set up brew path for current session based on architecture
+SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Ensure core prerequisites (Xcode CLT, Homebrew, git, curl, zsh, stow, Oh My Zsh) are installed
+bash "$SOURCE_DIR/core.sh"
+
+# Ensure Homebrew is in PATH for current session
+if ! command -v brew &> /dev/null; then
     if [[ "$(uname -m)" == "arm64" ]]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
     else
         eval "$(/usr/local/bin/brew shellenv)"
     fi
-else
-    echo "✅ Homebrew already installed."
 fi
 
 # Make sure we’re using the latest Homebrew.
@@ -34,7 +35,7 @@ echo "Installing Homebrew packages from Brewfile... 🚀"
 # > to the home directory.
 brew install stow
 
-brew bundle install --file="./Brewfile"
+brew bundle install --file="$SOURCE_DIR/Brewfile"
 
 # Add `gsha256sum` as `sha256sum` for compatibility with GNU tools.
 # Part of `coreutils` installation (might be needed for gpg signing).
@@ -120,12 +121,15 @@ brew cleanup
 
 echo "Finished Homebrew setup! 🎉"
 
-echo "Switching default shell to zsh... 🐚"
 # Switch to using brew-installed zsh as default shell if it's not already the user's login shell.
 CURRENT_SHELL="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')"
 CURRENT_SHELL="${CURRENT_SHELL:-$SHELL}"
 ZSH_PATH="$(command -v zsh)"
 if [[ -n "$ZSH_PATH" && "$CURRENT_SHELL" != "$ZSH_PATH" ]]; then
+  echo "Switching default shell to zsh ($ZSH_PATH)... 🐚"
+  if [[ -f /etc/shells ]] && ! grep -qx "$ZSH_PATH" /etc/shells; then
+    echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
+  fi
   # For m1 macs:
   chsh -s "$ZSH_PATH"
   # For intel macs:
