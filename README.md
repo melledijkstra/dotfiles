@@ -28,7 +28,8 @@ Alternatively, you can run individual steps manually:
 ```bash
 # On Ubuntu / Debian:
 ./apt.sh
-./apps-linux.sh # optional: installs Google Chrome, VS Code, agy CLI, Node.js, and pnpm
+# optional: installs GUI apps, e.g. Google Chrome, VS Code, Spotify and various dev tools
+./apps-linux.sh
 
 # On macOS:
 ./brew.sh

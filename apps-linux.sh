@@ -100,4 +100,19 @@ if command -v pnpm &>/dev/null; then
   echo "✅ pnpm is installed and enabled ($(pnpm -v))."
 fi
 
+# 6. Spotify
+if command -v spotify &>/dev/null; then
+  echo "✅ Spotify is already installed."
+else
+  echo "🎵 Installing Spotify..."
+  if ! command -v curl &>/dev/null || ! command -v gpg &>/dev/null; then
+    sudo apt update
+    sudo apt install -y curl gpg
+  fi
+  curl -fsSL https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+  echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list > /dev/null
+  sudo apt update
+  sudo apt install -y spotify-client
+fi
+
 echo "✨ Applications setup completed!"
