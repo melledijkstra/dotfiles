@@ -2,11 +2,11 @@
 
 # ----- PERSONAL CONFIGURATION ------------------
 export WORK_DIR="${WORK_DIR:-$HOME/work}"
-export PROJECTS_DIR="$HOME/projects"
+export PROJECTS_DIR="${PROJECTS_DIR:-$HOME/projects}"
 
 # important, other files rely on this env var to find the dotfiles directory
 # and import shell files from there
-export DOTFILES="$PROJECTS_DIR/dotfiles"
+export DOTFILES="${DOTFILES:-$PROJECTS_DIR/dotfiles}"
 
 export WORK_CHROME_PROFILE="Profile 1"
 export PERSONAL_CHROME_PROFILE="Profile 2"
