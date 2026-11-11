@@ -2,7 +2,7 @@
 
 # Install Linux GUI applications and CLI tools
 
-set -e
+set -eo pipefail
 
 # Load utilities
 SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -13,31 +13,42 @@ if ! is_linux; then
   exit 1
 fi
 
-echo "🚀 Installing Linux applications..."
-
-# 1. Google Chrome
-if command -v google-chrome &>/dev/null; then
-  echo "✅ Google Chrome is already installed."
-else
-  echo "🌐 Installing Google Chrome..."
-  TMP_CHROME="/tmp/google-chrome-stable_current_amd64.deb"
-  curl -fsSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o "$TMP_CHROME"
-  sudo apt install -y "$TMP_CHROME"
-  rm -f "$TMP_CHROME"
+# Ensure curl is available before downloading installers
+if ! command -v curl &>/dev/null; then
+  echo "📦 Installing curl..."
+  sudo apt update
+  sudo apt install -y curl
 fi
 
-# 2. Visual Studio Code
-if command -v code &>/dev/null; then
-  echo "✅ Visual Studio Code is already installed."
+echo "🚀 Installing Linux applications..."
+
+if is_wsl; then
+  echo "ℹ️  WSL environment detected — skipping Linux desktop GUI apps (Google Chrome, VS Code, Spotify)."
 else
-  echo "💻 Installing Visual Studio Code..."
-  sudo apt install -y wget gpg apt-transport-https
-  wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /tmp/packages.microsoft.gpg
-  sudo install -D -o root -g root -m 644 /tmp/packages.microsoft.gpg /usr/share/keyrings/microsoft.gpg
-  rm -f /tmp/packages.microsoft.gpg
-  echo "deb [arch=amd64,arm64,armhf signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
-  sudo apt update
-  sudo apt install -y code
+  # 1. Google Chrome
+  if command -v google-chrome &>/dev/null; then
+    echo "✅ Google Chrome is already installed."
+  else
+    echo "🌐 Installing Google Chrome..."
+    TMP_CHROME="/tmp/google-chrome-stable_current_amd64.deb"
+    curl -fsSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o "$TMP_CHROME"
+    sudo apt install -y "$TMP_CHROME"
+    rm -f "$TMP_CHROME"
+  fi
+
+  # 2. Visual Studio Code
+  if command -v code &>/dev/null; then
+    echo "✅ Visual Studio Code is already installed."
+  else
+    echo "💻 Installing Visual Studio Code..."
+    sudo apt install -y wget gpg apt-transport-https
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /tmp/packages.microsoft.gpg
+    sudo install -D -o root -g root -m 644 /tmp/packages.microsoft.gpg /usr/share/keyrings/microsoft.gpg
+    rm -f /tmp/packages.microsoft.gpg
+    echo "deb [arch=amd64,arm64,armhf signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+    sudo apt update
+    sudo apt install -y code
+  fi
 fi
 
 # 3. Antigravity CLI (agy)
@@ -52,7 +63,7 @@ fi
 export NVM_DIR="$HOME/.config/nvm"
 if [ ! -d "$NVM_DIR" ]; then
   echo "📦 Installing nvm..."
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash
 else
   echo "✅ nvm is already installed."
 fi
@@ -100,19 +111,21 @@ if command -v pnpm &>/dev/null; then
   echo "✅ pnpm is installed and enabled ($(pnpm -v))."
 fi
 
-# 6. Spotify
-if command -v spotify &>/dev/null; then
-  echo "✅ Spotify is already installed."
-else
-  echo "🎵 Installing Spotify..."
-  if ! command -v curl &>/dev/null || ! command -v gpg &>/dev/null; then
+# 6. Spotify (desktop Linux only)
+if ! is_wsl; then
+  if command -v spotify &>/dev/null; then
+    echo "✅ Spotify is already installed."
+  else
+    echo "🎵 Installing Spotify..."
+    if ! command -v gpg &>/dev/null; then
+      sudo apt update
+      sudo apt install -y gpg
+    fi
+    curl -fsSL https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list > /dev/null
     sudo apt update
-    sudo apt install -y curl gpg
+    sudo apt install -y spotify-client
   fi
-  curl -fsSL https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-  echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list > /dev/null
-  sudo apt update
-  sudo apt install -y spotify-client
 fi
 
 echo "✨ Applications setup completed!"
