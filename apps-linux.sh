@@ -60,12 +60,19 @@ else
 fi
 
 # 4. Node.js (via nvm)
-export NVM_DIR="$HOME/.config/nvm"
-if [ ! -d "$NVM_DIR" ]; then
+if [[ ! -d "$HOME/.nvm" && ! -d "$HOME/.config/nvm" ]]; then
   echo "📦 Installing nvm..."
+  unset NVM_DIR
   curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash
 else
   echo "✅ nvm is already installed."
+fi
+
+# Set NVM_DIR for the current script session (needed below for corepack and loading nvm.sh)
+if [[ -d "$HOME/.nvm" ]]; then
+  export NVM_DIR="$HOME/.nvm"
+else
+  export NVM_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/nvm"
 fi
 
 # Ensure corepack is automatically installed for any future Node.js versions
