@@ -74,9 +74,9 @@ gset org.gnome.shell.extensions.dash-to-dock extend-height false
 # Set dock icon size in pixels (default is 48)
 gset org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 36
 
-# Auto-hide the dock when windows overlap it
-gset org.gnome.shell.extensions.dash-to-dock dock-fixed false
-gset org.gnome.shell.extensions.dash-to-dock autohide true
+# Keep dock fixed and disable auto-hide
+gset org.gnome.shell.extensions.dash-to-dock dock-fixed true
+gset org.gnome.shell.extensions.dash-to-dock autohide false
 
 # Hide Trash and mounted drives from the dock
 gset org.gnome.shell.extensions.dash-to-dock show-trash false
