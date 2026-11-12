@@ -7,7 +7,10 @@
 # - $ZSH_CUSTOM/aliases.zsh
 # - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
-#
+
+# Load OS helpers if not already loaded
+[[ -f "$DOTFILES/lib/os.sh" ]] && source "$DOTFILES/lib/os.sh"
+
 alias zshconfig="code ~/.zshrc"
 alias ohmyzsh="code ~/.oh-my-zsh"
 
@@ -64,9 +67,6 @@ alias week='date +%V'
 
 # Get macOS Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
 #alias update='sudo softwareupdate -i -a; brew update; brew upgrade; brew cleanup; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update; sudo gem cleanup'
-
-# Load OS helpers if not already loaded
-[[ -f "$DOTFILES/lib/os.sh" ]] && source "$DOTFILES/lib/os.sh"
 
 # Google Chrome & IP addresses
 if is_macos; then
