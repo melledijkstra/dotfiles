@@ -86,6 +86,7 @@ RUN_APT=0
 RUN_APPS_LINUX=0
 RUN_BOOTSTRAP=0
 RUN_MACOS=0
+RUN_UBUNTU=0
 
 if is_macos; then
   if ask_yes_no "📦 Install/Upgrade Homebrew packages (brew.sh)?"; then
@@ -108,6 +109,10 @@ if is_macos; then
   if ask_yes_no "💻 Apply macOS system defaults (macos.sh)?"; then
     RUN_MACOS=1
   fi
+elif is_ubuntu && ! is_wsl; then
+  if ask_yes_no "💻 Apply Ubuntu desktop defaults (ubuntu.sh)?"; then
+    RUN_UBUNTU=1
+  fi
 fi
 
 echo ""
@@ -118,6 +123,7 @@ echo "   • Ensure core prerequisites (core.sh)"
 [[ $RUN_APPS_LINUX -eq 1 ]] && echo "   • Install Linux GUI apps & dev tools (apps-linux.sh)"
 [[ $RUN_BOOTSTRAP -eq 1 ]]  && echo "   • Back up conflicts & symlink dotfiles to \$HOME (bootstrap.sh)"
 [[ $RUN_MACOS -eq 1 ]]      && echo "   • Apply macOS system defaults (macos.sh)"
+[[ $RUN_UBUNTU -eq 1 ]]     && echo "   • Apply Ubuntu desktop defaults (ubuntu.sh)"
 echo ""
 
 if ! ask_yes_no "Proceed with installation?"; then
@@ -165,6 +171,11 @@ fi
 if [[ $RUN_MACOS -eq 1 ]]; then
   echo ""
   bash "$SOURCE_DIR/macos.sh"
+fi
+
+if [[ $RUN_UBUNTU -eq 1 ]]; then
+  echo ""
+  bash "$SOURCE_DIR/ubuntu.sh"
 fi
 
 echo ""

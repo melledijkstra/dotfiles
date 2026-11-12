@@ -43,6 +43,8 @@ You can also run individual steps manually:
 ./apt.sh
 # optional: installs GUI apps, e.g. Google Chrome, VS Code, Spotify and various dev tools
 ./apps-linux.sh
+# optional: applies sensible Ubuntu (GNOME) desktop defaults
+./ubuntu.sh
 
 # On macOS:
 ./brew.sh
