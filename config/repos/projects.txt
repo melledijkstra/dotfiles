@@ -8,7 +8,6 @@ git@github.com:melledijkstra/ducttape.git
 # Products
 git@github.com:melledijkstra/gas-fire.git
 git@github.com:melledijkstra/odysea.git
-git@github.com:melledijkstra/kiekeboe.git
 git@github.com:melledijkstra/world-citizens.git
 git@github.com:melledijkstra/piano_visualizer.git
 git@github.com:melledijkstra/melledijkstra.github.io.git
