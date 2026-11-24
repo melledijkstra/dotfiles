@@ -20,6 +20,7 @@ config/repos/work.txt
 
 # Secrets file (never to be committed!)
 .secrets
+secrets.env
 
 .ssh/*
 # except the config file

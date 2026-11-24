@@ -31,12 +31,16 @@ PACKAGES=(
   libimage-exiftool-perl
 
   # Development Tools
+  build-essential
   golang-go
   jq
   libnss3-tools
   mkcert
   python3
   tree
+
+  # Desktop Notifications (used by Looper system.notify)
+  libnotify-bin
 
   # Containers
   # docker.io # for now disabled
