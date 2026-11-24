@@ -163,6 +163,10 @@
 
 ### ---------- URL shorthands -------------------------
 
+# Automatically use SSH when pushing to GitHub HTTPS remotes (keeps clone/fetch working without SSH keys)
+[url "git@github.com:"]
+	pushInsteadOf = "https://github.com/"
+
 # [url "git@github.com:"]
 # 	insteadOf = "gh:"
 # 	pushInsteadOf = "github:"
