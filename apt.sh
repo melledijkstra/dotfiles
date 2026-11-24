@@ -38,6 +38,7 @@ PACKAGES=(
   mkcert
   python3
   tree
+  fonts-firacode
 
   # Desktop Notifications (used by Looper system.notify)
   libnotify-bin
