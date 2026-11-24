@@ -1,0 +1,18 @@
+# Non-secret Looper configuration (tracked in dotfiles, symlinked to ~/.config/looper/config.yaml).
+# Every field is optional — Looper works out of the box with built-in defaults.
+
+# Port for the local HTTP server (/status, /webhook, /oauth/callback)
+port: 5050
+
+# Timezone for cron schedules (defaults to system timezone)
+# timezone: Europe/Amsterdam
+
+# Google OAuth non-secret settings
+# (Keep GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in ~/.config/odysea/secrets.env or ~/.config/looper/.env)
+google:
+  redirectUri: http://localhost:5050/oauth/callback
+  scopes:
+    - openid
+    - profile
+    - email
+    - https://www.googleapis.com/auth/gmail.send

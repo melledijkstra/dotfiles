@@ -30,7 +30,8 @@ PACKAGES=(
   gifsicle
   libimage-exiftool-perl
 
-  # Development Tools & Fonts
+  # Development Tools
+  build-essential
   golang-go
   jq
   libnss3-tools
@@ -38,6 +39,9 @@ PACKAGES=(
   python3
   tree
   fonts-firacode
+
+  # Desktop Notifications (used by Looper system.notify)
+  libnotify-bin
 
   # Containers
   # docker.io # for now disabled
