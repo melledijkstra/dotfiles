@@ -10,7 +10,7 @@ brew "zsh"
 
 ## Git + Github
 # brew "git"
-# brew "gh"
+brew "gh"
 brew "git-lfs"
 
 ## File Processing
