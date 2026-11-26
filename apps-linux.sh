@@ -149,4 +149,18 @@ else
   sudo apt install -y gh
 fi
 
+# 8. SOPS (Secrets OPerationS) — installed from official GitHub releases
+# See: https://github.com/getsops/sops/releases
+if command -v sops &>/dev/null; then
+  echo "✅ SOPS is already installed ($(sops --version 2>&1 | head -n 1))."
+else
+  echo "🔐 Installing SOPS..."
+  SOPS_ARCH="$(dpkg --print-architecture)"
+  SOPS_VERSION="$(curl -fsSL https://api.github.com/repos/getsops/sops/releases/latest | grep -oE '"tag_name":[[:space:]]*"[^"]+"' | head -n 1 | cut -d'"' -f4)"
+  TMP_SOPS="$(mktemp)"
+  curl -fsSL "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.${SOPS_ARCH}" -o "$TMP_SOPS"
+  sudo install -m 755 "$TMP_SOPS" /usr/local/bin/sops
+  rm -f "$TMP_SOPS"
+fi
+
 echo "✨ Applications setup completed!"

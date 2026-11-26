@@ -40,6 +40,10 @@ PACKAGES=(
   tree
   fonts-firacode
 
+  # Secrets Management (sops is installed from GitHub releases via apps-linux.sh)
+  age
+  direnv
+
   # Desktop Notifications (used by Looper system.notify)
   libnotify-bin
 

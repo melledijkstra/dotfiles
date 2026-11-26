@@ -117,3 +117,8 @@ for file in ~/.{zsh_prompt,secrets,functions,aliases}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
+
+# Hook direnv for automatic per-directory environment loading
+if command -v direnv &>/dev/null; then
+  eval "$(direnv hook zsh)"
+fi

@@ -195,3 +195,10 @@
 # this automatically sets the right identity
 [includeIf "gitdir:~/work/"]
 	path = ~/.git.work.gitconfig
+# Authenticate HTTPS GitHub/Gist URLs via GitHub CLI (works on both Linux and macOS)
+[credential "https://github.com"]
+	helper = 
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !gh auth git-credential

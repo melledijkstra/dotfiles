@@ -18,9 +18,16 @@ Thumbs.db
 .git.personal.gitconfig
 config/repos/work.txt
 
-# Secrets file (never to be committed!)
+# Secrets & private keys (never to be committed!)
 .secrets
 secrets.env
+keys.txt
+*.key
+.env
+.env.*
+!.env.example
+!.env.*.example
+!*.enc.env
 
 .ssh/*
 # except the config file

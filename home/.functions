@@ -152,3 +152,152 @@ function o() {
 function treee() {
 	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
 }
+
+### --------- Secrets Management (SOPS + age) --------------------
+
+# Internal helper: resolve a secret target (services/<name>, projects/<name>, or bare <name>)
+# to its relative path inside $SECRETS_DIR (e.g. services/example.enc.env).
+function _secrets_resolve_rel() {
+	local target="$1"
+	local mode="${2:-existing}" # "existing" or "edit"
+	local secrets_dir="${SECRETS_DIR:-$HOME/projects/secrets}"
+
+	# Strip optional .enc.env suffix if passed
+	target="${target%.enc.env}"
+
+	if [[ "$target" == */* ]]; then
+		echo "${target}.enc.env"
+		return 0
+	fi
+
+	local svc_rel="services/${target}.enc.env"
+	local proj_rel="projects/${target}.enc.env"
+	local root_rel="${target}.enc.env"
+
+	if [[ -f "${secrets_dir}/${svc_rel}" && -f "${secrets_dir}/${proj_rel}" ]]; then
+		echo "Error: ambiguous secret '$target' exists in both services/ and projects/. Specify 'services/$target' or 'projects/$target'." >&2
+		return 1
+	elif [[ -f "${secrets_dir}/${svc_rel}" ]]; then
+		echo "$svc_rel"
+	elif [[ -f "${secrets_dir}/${proj_rel}" ]]; then
+		echo "$proj_rel"
+	elif [[ -f "${secrets_dir}/${root_rel}" ]]; then
+		echo "$root_rel"
+	elif [[ "$mode" == "edit" ]]; then
+		# Default new bare targets to services/<name>.enc.env
+		echo "$svc_rel"
+	else
+		echo "Error: secret '$target' not found in $secrets_dir (checked services/, projects/, and root)." >&2
+		return 1
+	fi
+}
+
+# Create or edit an encrypted secret file ($SECRETS_DIR/{services,projects}/<name>.enc.env)
+# Usage: secrets-edit [services/<name>|projects/<name>|<name>]
+function secrets-edit() {
+	local target="$1"
+	if [[ -z "$target" ]]; then
+		echo "Usage: secrets-edit <services/name | projects/name | name>" >&2
+		return 1
+	fi
+
+	local secrets_dir="${SECRETS_DIR:-$HOME/projects/secrets}"
+	local sops_config="${secrets_dir}/.sops.yaml"
+
+	if [[ ! -d "$secrets_dir" ]]; then
+		echo "Error: SECRETS_DIR does not exist: $secrets_dir" >&2
+		return 1
+	fi
+
+	local rel_path
+	rel_path="$(_secrets_resolve_rel "$target" edit)" || return 1
+	mkdir -p "${secrets_dir}/$(dirname "$rel_path")"
+
+	# Ensure GUI editors like VS Code wait for the temp file to be closed before sops re-encrypts
+	local sops_editor="${EDITOR:-nano}"
+	if [[ "$sops_editor" == "code" ]]; then
+		sops_editor="code --wait"
+	fi
+
+	local -a sops_args=()
+	if [[ -f "$sops_config" ]]; then
+		sops_args+=(--config "$sops_config")
+	fi
+
+	# Run from SECRETS_DIR so .sops.yaml path_regex rules match reliably
+	(
+		cd "$secrets_dir" &&
+		SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}" \
+		EDITOR="$sops_editor" \
+		sops "${sops_args[@]}" "$rel_path"
+	)
+}
+
+# List available encrypted secret files in $SECRETS_DIR (services/ and projects/)
+function secrets-list() {
+	local secrets_dir="${SECRETS_DIR:-$HOME/projects/secrets}"
+	if [[ ! -d "$secrets_dir" ]]; then
+		echo "Error: SECRETS_DIR does not exist: $secrets_dir" >&2
+		return 1
+	fi
+
+	local found=0
+	local file rel
+	for file in "$secrets_dir"/services/*.enc.env(N) "$secrets_dir"/projects/*.enc.env(N) "$secrets_dir"/*.enc.env(N); do
+		rel="${file#$secrets_dir/}"
+		echo "${rel%.enc.env}"
+		found=1
+	done
+
+	if [[ $found -eq 0 ]]; then
+		echo "No encrypted secret files (*.enc.env) found in $secrets_dir" >&2
+	fi
+}
+
+# Run a one-off command with a secret file's variables injected in memory via sops exec-env
+# Usage: secrets-run <services/name | projects/name | name> -- <cmd...>
+function secrets-run() {
+	local target="$1"
+	shift || true
+	if [[ "$1" == "--" ]]; then
+		shift
+	fi
+
+	if [[ -z "$target" || $# -eq 0 ]]; then
+		echo "Usage: secrets-run <services/name | projects/name | name> -- <cmd...>" >&2
+		return 1
+	fi
+
+	local secrets_dir="${SECRETS_DIR:-$HOME/projects/secrets}"
+	local rel_path
+	rel_path="$(_secrets_resolve_rel "$target" existing)" || return 1
+	local secret_file="${secrets_dir}/${rel_path}"
+
+	if [[ ! -f "$secret_file" ]]; then
+		echo "Error: secret file not found: $secret_file" >&2
+		return 1
+	fi
+
+	# Quote command arguments safely for sops exec-env (which invokes a shell)
+	local cmd_str=""
+	local arg
+	for arg in "$@"; do
+		cmd_str+="${(q)arg} "
+	done
+
+	SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}" \
+		sops exec-env "$secret_file" "$cmd_str"
+}
+
+# Tab completion for secrets-edit and secrets-run
+function _secrets_services() {
+	local secrets_dir="${SECRETS_DIR:-$HOME/projects/secrets}"
+	local -a targets=()
+	local f rel
+	for f in "$secrets_dir"/services/*.enc.env(N) "$secrets_dir"/projects/*.enc.env(N) "$secrets_dir"/*.enc.env(N); do
+		rel="${f#$secrets_dir/}"
+		targets+=("${rel%.enc.env}")
+	done
+	compadd -a targets
+}
+compdef _secrets_services secrets-edit secrets-run

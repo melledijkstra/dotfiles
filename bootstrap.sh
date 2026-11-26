@@ -66,6 +66,11 @@ make_myself_at_home() {
   echo "✅ No conflicts. Setting up symlinks with Stow..."
   stow --verbose -R -t "$target" home
 
+  # Enable repository pre-commit secrets guard if present
+  if [[ -d "$SOURCE_DIR/.githooks" ]] && git -C "$SOURCE_DIR" rev-parse --is-inside-work-tree &>/dev/null; then
+    git -C "$SOURCE_DIR" config core.hooksPath .githooks
+  fi
+
   # Reload shell if currently running inside zsh
   # Note: This affects the script's subshell; the user will still
   # need to run `source ~/.zshrc` in their main terminal once.

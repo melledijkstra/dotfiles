@@ -29,6 +29,11 @@ brew "python@3.14"
 brew "stow"
 brew "tree"
 
+## Secrets Management
+brew "age"
+brew "direnv"
+brew "sops"
+
 # install using standalone script instead, see: https://pnpm.io/installation
 # brew "pnpm"
 

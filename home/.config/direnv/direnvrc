@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# direnv stdlib extensions managed by dotfiles.
+# Sourced automatically by direnv from ~/.config/direnv/direnvrc.
+
+# Decrypt and export one or more SOPS-encrypted dotenv files without writing
+# plaintext .env files to disk.
+#
+# Usage in a project's .envrc:
+#   use sops services/openai projects/my-app
+#   use sops example
+#
+# Resolution order for each <target> (with SECRETS_DIR defaulting to ~/projects/secrets):
+#   1. Direct path if <target> ends in ".enc.env" or starts with "/" or "."
+#   2. "$SECRETS_DIR/<target>.enc.env" if <target> contains "/" (e.g. services/foo, projects/bar)
+#   3. Bare name: checks "$SECRETS_DIR/services/<target>.enc.env",
+#      "$SECRETS_DIR/projects/<target>.enc.env", then "$SECRETS_DIR/<target>.enc.env"
+use_sops() {
+  if [[ $# -eq 0 ]]; then
+    log_error "use_sops: specify at least one secret target (e.g. 'use sops services/stripe projects/myapp')"
+    return 1
+  fi
+
+  if ! has sops; then
+    log_error "use_sops: 'sops' is not installed or not in PATH"
+    return 1
+  fi
+
+  local key_file="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
+  if [[ ! -f "$key_file" ]]; then
+    log_error "use_sops: age key file not found at $key_file"
+    return 1
+  fi
+  export SOPS_AGE_KEY_FILE="$key_file"
+
+  local secrets_dir="${SECRETS_DIR:-$HOME/projects/secrets}"
+  local target secret_file svc_file proj_file root_file
+
+  for target in "$@"; do
+    secret_file=""
+    if [[ "$target" == *.enc.env || "$target" == /* || "$target" == .* ]]; then
+      secret_file="$target"
+    elif [[ "$target" == */* ]]; then
+      secret_file="${secrets_dir}/${target}.enc.env"
+    else
+      svc_file="${secrets_dir}/services/${target}.enc.env"
+      proj_file="${secrets_dir}/projects/${target}.enc.env"
+      root_file="${secrets_dir}/${target}.enc.env"
+
+      if [[ -f "$svc_file" && -f "$proj_file" ]]; then
+        log_error "use_sops: ambiguous name '$target' exists in both services/ and projects/; specify 'services/$target' or 'projects/$target'"
+        return 1
+      elif [[ -f "$svc_file" ]]; then
+        secret_file="$svc_file"
+      elif [[ -f "$proj_file" ]]; then
+        secret_file="$proj_file"
+      elif [[ -f "$root_file" ]]; then
+        secret_file="$root_file"
+      fi
+    fi
+
+    if [[ -z "$secret_file" || ! -f "$secret_file" ]]; then
+      log_error "use_sops: secret file not found for '$target' in $secrets_dir"
+      return 1
+    fi
+
+    # Reload environment automatically whenever the encrypted file changes
+    watch_file "$secret_file"
+
+    # Let SOPS decrypt & inject directly into the environment, then hand it to direnv
+    direnv_load sops exec-env "$secret_file" "direnv dump" || {
+      log_error "use_sops: failed to decrypt $secret_file"
+      return 1
+    }
+  done
+}

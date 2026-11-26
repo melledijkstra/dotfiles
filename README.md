@@ -88,12 +88,56 @@ export PATH="/usr/local/bin:$PATH"
 
 ### Add secret configurations
 
-In order to keep sensitive data safe, you can put any of that information in the .secrets file.
-e.g. personal access tokens, emails, passwords, api keys, etc.
+#### Encrypted Secrets Workflow (`SOPS` + `age` + `direnv`)
 
-An example of my `.secrets` file can be found in `home/.secrets.example`
+Secrets are encrypted with [SOPS](https://github.com/getsops/sops) + [age](https://github.com/FiloSottile/age) and stored in a separate private directory/repository pointed to by `$SECRETS_DIR` (defaults to `~/projects/secrets`). Keeping encrypted files out of this public dotfiles repository ensures service/project filenames and environment variable key names stay private too.
 
-You could also use `~/.secrets` to override settings, functions and aliases from my dotfiles repository. It’s probably better to [fork this repository](https://github.com/melledijkstra/dotfiles/fork) instead, though.
+**Directory layout (`$SECRETS_DIR`):**
+```text
+$SECRETS_DIR/
+├── .sops.yaml            # Encryption rules targeting *.enc.{env,yaml,yml,json}
+├── services/             # Shared/generic credentials (e.g. openai.enc.env, stripe.enc.env)
+└── projects/             # Project-specific secrets (e.g. my-app.enc.env)
+```
+
+- **Key location (Linux & macOS):** `~/.config/sops/age/keys.txt` (`SOPS_AGE_KEY_FILE` is exported in `home/.exports` so macOS uses the same path as Linux).
+- **Daily commands** (defined in `home/.functions` and `home/.config/direnv/direnvrc`):
+  - `secrets-edit services/<name>` or `secrets-edit projects/<name>` — create or edit an encrypted file in `$EDITOR` (auto-encrypts on save; bare `<name>` defaults to `services/`).
+  - `secrets-list` — list available encrypted files across `services/` and `projects/`.
+  - `secrets-run <target> -- <cmd...>` — run a one-off command with secrets injected in memory via `sops exec-env`.
+  - **Per-project auto-loading with `direnv`:** add a `.envrc` in any project directory and run `direnv allow`:
+    ```bash
+    use sops services/openai projects/my-app
+    ```
+    (Bare names like `use sops example` also auto-resolve across `services/` and `projects/`.) Secrets are decrypted in memory via `direnv_load sops exec-env` without writing plaintext `.env` files to disk.
+
+#### Backing Up & Restoring Your `age` Key on a New Machine
+
+Your private key at `~/.config/sops/age/keys.txt` is **never** committed to git. Store its contents securely in your password manager (e.g., 1Password, Bitwarden, or Apple Passwords).
+
+On a new Linux or macOS machine:
+
+1. Install packages and stow dotfiles as usual (`./install.sh`, or `./brew.sh` on macOS / `./apt.sh && ./apps-linux.sh` on Ubuntu + `./bootstrap.sh`).
+2. Restore your private `age` key with strict permissions:
+   ```bash
+   mkdir -p ~/.config/sops/age && chmod 700 ~/.config/sops/age
+   # Paste your saved key into ~/.config/sops/age/keys.txt
+   chmod 600 ~/.config/sops/age/keys.txt
+   ```
+3. Clone your private secrets repository into `$SECRETS_DIR` and enable its pre-commit guard:
+   ```bash
+   git clone <your-private-secrets-repo> "$SECRETS_DIR"
+   git -C "$SECRETS_DIR" config core.hooksPath .githooks
+   ```
+4. Verify decryption works:
+   ```bash
+   secrets-list
+   secrets-run services/example -- env | grep EXAMPLE_
+   ```
+
+#### Local Shell Overrides (`~/.secrets`)
+
+For machine-local shell exports, functions, or alias overrides that you don’t want to commit, you can still use `~/.secrets` (see `home/.secrets.example`). You could also [fork this repository](https://github.com/melledijkstra/dotfiles/fork) for your own customization.
 
 ### Sensible macOS defaults
 

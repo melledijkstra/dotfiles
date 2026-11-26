@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Lightweight git pre-commit guard to prevent accidentally committing
+# private keys, plaintext .env files, or unencrypted secret files.
+
+set -euo pipefail
+
+blocked=0
+
+while IFS= read -r -d '' file; do
+  base="$(basename "$file")"
+
+  # 1. Never allow age/private key files
+  if [[ "$base" == "keys.txt" || "$base" == *.key ]]; then
+    echo "❌ Blocked: refusing to commit private key file: $file" >&2
+    blocked=1
+    continue
+  fi
+
+  # 2. Never allow plaintext .env files (allow *.example and *.enc.env)
+  if [[ "$base" == ".env" || "$base" == .env.* ]]; then
+    if [[ "$base" != *.example && "$base" != *.enc.env ]]; then
+      echo "❌ Blocked: refusing to commit plaintext env file: $file" >&2
+      blocked=1
+      continue
+    fi
+  fi
+
+  # 3. Verify any *.enc.(env|yaml|yml|json) file is actually SOPS-encrypted
+  if [[ "$file" =~ \.enc\.(env|yaml|yml|json)$ ]]; then
+    if ! git show ":$file" | grep -qE '(ENC\[AES256_GCM,|sops_mac=|"sops":|^sops:)'; then
+      echo "❌ Blocked: $file looks unencrypted (missing SOPS encryption metadata)" >&2
+      blocked=1
+      continue
+    fi
+  fi
+
+  # 4. Inside a secrets/ directory, block any unencrypted data files
+  if [[ "$file" == secrets/* ]]; then
+    case "$base" in
+      .gitignore|.sops.yaml|README.md|*.example|*.enc.env|*.enc.yaml|*.enc.yml|*.enc.json)
+        ;;
+      *)
+        echo "❌ Blocked: unencrypted file inside secrets/: $file" >&2
+        blocked=1
+        ;;
+    esac
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACM -z)
+
+if [[ $blocked -ne 0 ]]; then
+  echo "" >&2
+  echo "Commit aborted by pre-commit secrets guard." >&2
+  exit 1
+fi
