@@ -124,7 +124,7 @@ On a new Linux or macOS machine:
    # Paste your saved key into ~/.config/sops/age/keys.txt
    chmod 600 ~/.config/sops/age/keys.txt
    ```
-3. Clone your private secrets repository into `$SECRETS_DIR` and enable its pre-commit guard:
+3. Clone your private secrets repository into `$SECRETS_DIR` and enable its pre-commit guard (or let `./install.sh` prompt for the URL and set it up for you):
    ```bash
    git clone <your-private-secrets-repo> "$SECRETS_DIR"
    git -C "$SECRETS_DIR" config core.hooksPath .githooks

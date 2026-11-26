@@ -86,6 +86,9 @@ RUN_APPS_MACOS=0
 RUN_APT=0
 RUN_APPS_LINUX=0
 RUN_BOOTSTRAP=0
+RUN_SECRETS=0
+SECRETS_REPO_URL=""
+SECRETS_TARGET_DIR="${SECRETS_DIR:-$HOME/projects/secrets}"
 RUN_VSCODE=0
 RUN_SYNC_REPOS=0
 RUN_MACOS=0
@@ -109,6 +112,26 @@ fi
 
 if ask_yes_no "🔗 Sync dotfiles to home directory (bootstrap.sh)?"; then
   RUN_BOOTSTRAP=1
+fi
+
+if [[ -d "$SECRETS_TARGET_DIR/.git" ]]; then
+  if ask_yes_no "🔐 Update secrets repository ($SECRETS_TARGET_DIR)?"; then
+    RUN_SECRETS=1
+  fi
+else
+  if ask_yes_no "🔐 Clone a private secrets repository into $SECRETS_TARGET_DIR?"; then
+    printf "   Secrets repo Git URL (e.g. git@github.com:user/secrets.git): "
+    if [[ -r /dev/tty ]]; then
+      read -r SECRETS_REPO_URL < /dev/tty
+    else
+      read -r SECRETS_REPO_URL
+    fi
+    if [[ -n "$SECRETS_REPO_URL" ]]; then
+      RUN_SECRETS=1
+    else
+      echo "   ℹ️  No URL entered — skipping secrets repository."
+    fi
+  fi
 fi
 
 if ask_yes_no "💻 Setup VS Code extensions & settings (vscode.sh)?"; then
@@ -137,6 +160,7 @@ echo "   • Ensure core prerequisites (core.sh)"
 [[ $RUN_APT -eq 1 ]]        && echo "   • Install/upgrade Ubuntu packages (apt.sh)"
 [[ $RUN_APPS_LINUX -eq 1 ]] && echo "   • Install Linux GUI apps & dev tools (apps-linux.sh)"
 [[ $RUN_BOOTSTRAP -eq 1 ]]  && echo "   • Back up conflicts & symlink dotfiles to \$HOME (bootstrap.sh)"
+[[ $RUN_SECRETS -eq 1 ]]    && echo "   • Sync private secrets repository ($SECRETS_TARGET_DIR)"
 [[ $RUN_VSCODE -eq 1 ]]     && echo "   • Configure VS Code extensions & settings (vscode.sh)"
 [[ $RUN_SYNC_REPOS -eq 1 ]] && echo "   • Clone/update development repositories (sync-repos)"
 [[ $RUN_MACOS -eq 1 ]]      && echo "   • Apply macOS system defaults (macos.sh)"
@@ -188,6 +212,24 @@ fi
 if [[ $RUN_BOOTSTRAP -eq 1 ]]; then
   echo ""
   bash "$SOURCE_DIR/bootstrap.sh" --force
+fi
+
+if [[ $RUN_SECRETS -eq 1 ]]; then
+  echo ""
+  echo "🔐 Setting up secrets repository in $SECRETS_TARGET_DIR..."
+  if [[ -d "$SECRETS_TARGET_DIR/.git" ]]; then
+    git -C "$SECRETS_TARGET_DIR" pull --ff-only || echo "⚠️  Could not fast-forward $SECRETS_TARGET_DIR (local changes or diverged branch?)."
+  else
+    mkdir -p "$(dirname "$SECRETS_TARGET_DIR")"
+    git clone "$SECRETS_REPO_URL" "$SECRETS_TARGET_DIR"
+  fi
+  if [[ -d "$SECRETS_TARGET_DIR/.githooks" ]]; then
+    git -C "$SECRETS_TARGET_DIR" config core.hooksPath .githooks
+  fi
+  AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
+  if [[ ! -f "$AGE_KEY_FILE" ]]; then
+    echo "ℹ️  Remember to restore your age private key to $AGE_KEY_FILE (chmod 600) to decrypt secrets."
+  fi
 fi
 
 if [[ $RUN_VSCODE -eq 1 ]]; then
